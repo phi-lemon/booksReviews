@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Connectez-vous{% endblock %}
+{% block content %}
+    <div id='login_wrapper'>
+        <div id='register_block'>
+            <h2>Inscrivez-vous maintenant</h2>
+            <a href="{% url "register" %}" class="button">inscrivez-vous</a></div>
+        <div id='login_block'>
+        <h2>Connectez-vous</h2>
+            {% if form.errors %}
+                <p>
+                    Votre nom d'utilisateur et votre mot de passe ne correspondent pas.
+                    Merci de réessayer.
+                </p>
+            {% endif %}
+            <div class="login-form">
+                <form action="{% url 'login' %}" method="post">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                    <p><input type="submit" value="Se connecter"></p>
+                </form>
+            </div>
+            <div class="margin_top_20 smaller_txt"><a href="{% url "password_reset" %}">Mot de passe oublié ?</a></div>
+        </div>
+    </div>
+{% endblock %}
