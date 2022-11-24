@@ -7,3 +7,6 @@ def index(request):
     return render(request, 'flux/index.html', {'section': 'flux'})
 
 
+
+
+

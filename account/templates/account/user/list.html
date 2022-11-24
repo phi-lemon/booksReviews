@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Abonnements{% endblock %}
+{% block content %}
+    <h1>Abonnements</h1>
+    <div>
+        {% for user in users %}
+            <div class="user">
+                <div class="info">
+                    <a href="{{ user.username }}" class="title">
+                        {{ user.username }}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
