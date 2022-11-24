@@ -8,10 +8,6 @@
         <div id='login_block'>
         <h2>Connectez-vous</h2>
             {% if form.errors %}
-                <p>
-                    Votre nom d'utilisateur et votre mot de passe ne correspondent pas.
-                    Merci de réessayer.
-                </p>
             {% endif %}
             <div class="login-form">
                 <form action="{% url 'login' %}" method="post">

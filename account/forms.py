@@ -8,6 +8,11 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(label="Mot de passe", strip=False,
                                widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}), )
 
+    error_messages = {
+        'invalid_login': "Votre nom d'utilisateur et votre mot de passe ne correspondent pas. Merci de réessayer. ",
+        'inactive': "Ce compte est inactif",
+    }
+
 
 class UserRegistrationForm(forms.ModelForm):
     username = UsernameField(label='Utilisateur', widget=forms.TextInput(attrs={'autofocus': True}))

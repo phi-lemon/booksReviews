@@ -29,8 +29,8 @@ h2 {
 
 #header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    padding: 20px 100px;
+    grid-template-columns: 1fr auto auto;
+    padding: 30px 100px;
     font-size: 14px;
     background: #2c3e50;
     color: #fff;
@@ -46,12 +46,12 @@ h2 {
     list-style: none;
     float: left;
     margin: 0;
-    padding: 0;
+    padding: 0 40px 0 0;
 }
 
 #header ul.menu li {
     float: left;
-    padding: 4px 10px;
+    padding: 0 10px;
 }
 
 #header ul.menu li.selected a, #header ul.menu li.selected a:hover {
@@ -79,6 +79,7 @@ h2 {
 
 label {
     display: block;
+    clear: left;
     color: #333;
     margin-bottom: 4px;
 }
@@ -107,6 +108,14 @@ input, textarea {
 
 #content_account input, #content_account textarea {
     margin-bottom: 20px;
+}
+
+
+#content_account .errorlist {
+  color: #cc0033;
+  float: left;
+  clear: both;
+  padding: 0 0 20px 0;
 }
 
 input[type=text], input[type=password], input[type=email], input[type=url],
@@ -211,13 +220,13 @@ ul.messages li a.close {
 #login_wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-column-gap: 20px;
+    column-gap: 20px;
 }
 
 @media screen and (max-width: 454px) {
     #login_wrapper {
         grid-template-columns: 1fr;
-        grid-row-gap: 0px;
+        row-gap: 0px;
     }
     h2 {
         font-size: 20px;
