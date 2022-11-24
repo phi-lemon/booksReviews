@@ -1,16 +1,10 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from .forms import CustomAuthenticationForm, UserRegistrationForm
 
 
 class CustomLoginView(LoginView):
     authentication_form = CustomAuthenticationForm
-
-
-@login_required
-def flux(request):
-    return render(request, 'account/flux.html', {'section': 'flux'})
 
 
 def register(request):

@@ -93,8 +93,13 @@ input[type=submit], a.button {
     font-size: 14px;
     text-transform: uppercase;
     cursor: pointer;
-    margin-top: 10px;
+    margin: 10px 10px 0 0;
     border-radius: 5px;
+    height: auto;
+}
+
+input[type=submit].greybutton, a.button.greybutton {
+    background: #7f8c8d;
 }
 
 input, textarea {

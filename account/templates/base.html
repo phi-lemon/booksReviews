@@ -15,7 +15,7 @@
         {% if request.user.is_authenticated %}
             <ul class="menu">
                 <li {% if section == "flux" %}class="selected"{% endif %}>
-                    <a href="{% url "flux" %}">Flux</a>
+                    <a href="{% url "index" %}">Flux</a>
                 </li>
                 <li {% if section == "posts" %}class="selected"{% endif %}>
                     <a href="#">Posts</a>
