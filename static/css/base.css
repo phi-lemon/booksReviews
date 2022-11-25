@@ -252,4 +252,10 @@ ul.messages li a.close {
     font-size: 0.9em;
 }
 
+.abonnements ul li, .user_follow input {
+    display: inline-block;
+}
 
+.abonnements ul li {
+    min-width: 120px;
+}

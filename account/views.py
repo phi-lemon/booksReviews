@@ -4,12 +4,12 @@ from .forms import CustomAuthenticationForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from .models import UserFollows
 
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from utils.utils import check_ajax
 
 
 class CustomLoginView(LoginView):
@@ -38,27 +38,18 @@ def register(request):
 
 
 @login_required
-def user_list(request):
-    users = User.objects.filter(is_active=True)
-    return render(request,
-                  'account/user/list.html',
-                  {'section': 'abonnements',
-                   'users': users})
-
-
-@login_required
-def user_detail(request, username):
-    user = get_object_or_404(User,
-                             username=username,
-                             is_active=True)
+def user_detail(request):
+    user = request.user
+    users_followed_queryset = UserFollows.objects.filter(user_id=user.id)
+    followers_queryset = UserFollows.objects.filter(followed_user_id=user.id)
     return render(request,
                   'account/user/detail.html',
                   {'section': 'abonnements',
-                   'user': user})
+                   'user': user,
+                   'usersfollowed': users_followed_queryset,
+                   'followers': followers_queryset})
 
 
-@check_ajax
-@require_POST
 @login_required
 def user_follow(request):
     user_id = request.POST.get('id')
@@ -68,10 +59,10 @@ def user_follow(request):
             user = User.objects.get(id=user_id)
             if action == 'follow':
                 UserFollows.objects.get_or_create(user=request.user, followed_user=user)
-                # create_action(request.user, 'is following', user)
             else:
                 UserFollows.objects.filter(user=request.user, followed_user=user).delete()
-            return JsonResponse({'status': 'ok'})
+            return HttpResponseRedirect(reverse('user_detail'))
         except User.DoesNotExist:
-            return JsonResponse({'status': 'error'})
-    return JsonResponse({'status': 'error'})
+            return render(request, {
+                'error_message': "Cet utilisateur n'existe pas ou plus",
+            })
