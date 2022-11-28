@@ -6,11 +6,11 @@ body {
 }
 
 a {
-    color: #3498db;
+    color: #2980b9;
 }
 
 a:hover {
-    color: #34495e;
+    color: #3498db;
 }
 
 h1, h2 {
@@ -24,7 +24,7 @@ h1 {
 }
 
 h2 {
-    font-size: 1.8em;
+    font-size: 1.6em;
 }
 
 #header {
@@ -32,7 +32,7 @@ h2 {
     grid-template-columns: 1fr auto auto;
     padding: 30px 100px;
     font-size: 14px;
-    background: #2c3e50;
+    background: #3498db;
     color: #fff;
 }
 
@@ -55,7 +55,7 @@ h2 {
 }
 
 #header ul.menu li.selected a, #header ul.menu li.selected a:hover {
-    color: #3498db;
+    color: #2c3e50;
     font-weight: bold;
 }
 
@@ -64,12 +64,11 @@ h2 {
 }
 
 #header a:hover {
-    color: #3498db;
+    color: #2c3e50;
 }
 
-#header .user {
-    float: right;
-    padding-top: 4px;
+#header .user a {
+    text-decoration: underline;
 }
 
 #content_account {
@@ -86,16 +85,20 @@ label {
 
 input[type=submit], a.button {
     display: inline-block;
-    font-weight: bold;
-    background: #3498db;
+    background: #34495e;
     color: #fff;
     padding: 10px 20px;
-    font-size: 14px;
+    font-size: 13px;
     text-transform: uppercase;
     cursor: pointer;
     margin: 10px 10px 0 0;
     border-radius: 5px;
     height: auto;
+    transition: 0.3s;
+}
+
+input[type=submit]:hover, a.button:hover {
+    background: #3498db;
 }
 
 input[type=submit].greybutton, a.button.greybutton {
@@ -154,65 +157,7 @@ textarea:focus, select:focus, .vTextField:focus {
     font-size: 13px;
 }
 
-/* messages */
-ul.messages {
-    margin: 10px 100px;
-    padding: 0;
-    list-style-type: none;
-}
 
-ul.messages li.success,
-ul.messages li.warning,
-ul.messages li.error,
-ul.messages li.info {
-    margin: 0;
-    padding: 14px 20px;
-    list-style: none;
-    color: #fff;
-}
-
-ul.messages li.success {
-    background: #81ce81;
-}
-
-ul.messages li.success a {
-    color: #0ac33e;
-}
-
-ul.messages li.error {
-    background: #a30029;
-    color: #e9828e;
-}
-
-ul.messages li.error a {
-    color: #e9828e;
-}
-
-ul.messages li.info {
-    background: #faffae;
-    color: #696b4e;
-}
-
-ul.messages li.info a {
-    color: #1586de;
-}
-
-ul.messages li.warning {
-    background: #de9404;
-}
-
-ul.messages li.warning a {
-    color: #f49000;
-}
-
-ul.messages li a.close {
-    margin: 0;
-    float: right;
-    opacity: 1;
-    border: 0;
-    box-shadow: none;
-    text-shadow: none;
-}
 
 .login-form {
     /*float:left;*/
@@ -252,10 +197,32 @@ ul.messages li a.close {
     font-size: 0.9em;
 }
 
-.abonnements ul li, .user_follow input {
+.abonnements ul li, .user_follow input[type=submit], .suivre input {
     display: inline-block;
 }
 
-.abonnements ul li {
-    min-width: 120px;
+.abonnements ul li, .abonnes ul li {
+    min-width: 160px;
+    min-height: 35px;
+    padding: 7px 0 0 50px;
+    font-size: 1.2em;
+}
+
+.abonnements ul li, .abonnes ul li {
+    background: url("../img/follower.png") no-repeat 0 0;
+}
+
+.abonnes ul li {
+    background: url("../img/following.png") no-repeat 0 0;
+    margin-bottom: 20px;
+}
+
+.suivre input[type=text] {
+    min-width: 305px;
+    margin-right: 20px;
+}
+
+.error_msg {
+    margin-top: 50px;
+    color: #cc0000;
 }

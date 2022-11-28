@@ -2,12 +2,26 @@
 
 {% block title %}Abonnements{% endblock %}
 
+
 {% block content %}
+    {% if error_message %}<p class="error_msg"><strong>{{ error_message }}</strong></p>{% endif %}
+    <div class="suivre">
+        <h2>Suivre d'autres utilisateurs</h2>
+        <form action="{% url "user_detail" %}" method="post" name="form_follow">
+        {% csrf_token %}
+        <label for="username">Pseudo de l'utilisateur:</label>
+        <input type="text" name="username" id="username" value="" required>
+        <input type="hidden" name="action" value="follow">
+        <input type="submit" value="S'abonner">
+        </form>
+
+    </div>
+    <br/><br/>
     <div class="abonnements">
         <h2>Abonnements</h2>
         <ul>
             {% for userfollowed in usersfollowed.all %}
-                <form action="{% url "user_follow" %}" method="post"
+                <form action="{% url "user_detail" %}" method="post"
                       onsubmit="return confirm('Etes-vous sûr de vous désabonner de {{ userfollowed.followed_user }} ?');">
                     {% csrf_token %}
                     <li>{{ userfollowed.followed_user }}</li>
@@ -18,7 +32,7 @@
             {% endfor %}
         </ul>
     </div>
-
+    <br/><br/>
     <div class="abonnes">
         <h2>Abonnés</h2>
         <ul>

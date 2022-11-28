@@ -3,13 +3,10 @@ from django.contrib.auth.views import LoginView
 from .forms import CustomAuthenticationForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from .models import UserFollows
-
-from django.http import JsonResponse
 
 
 class CustomLoginView(LoginView):
@@ -42,27 +39,51 @@ def user_detail(request):
     user = request.user
     users_followed_queryset = UserFollows.objects.filter(user_id=user.id)
     followers_queryset = UserFollows.objects.filter(followed_user_id=user.id)
-    return render(request,
-                  'account/user/detail.html',
-                  {'section': 'abonnements',
-                   'user': user,
-                   'usersfollowed': users_followed_queryset,
-                   'followers': followers_queryset})
 
+    def render_user_detail(error_message=""):
+        return render(request,
+                      'account/user/detail.html',
+                      {'section': 'abonnements',
+                       'user': user,
+                       'usersfollowed': users_followed_queryset,
+                       'followers': followers_queryset,
+                       'error_message': error_message})
 
-@login_required
-def user_follow(request):
-    user_id = request.POST.get('id')
-    action = request.POST.get('action')
-    if user_id and action:
+    related_user = ''
+
+    # Case no action, initial view
+    if request.method == 'GET':
+        return render_user_detail()
+
+    elif request.method == 'POST' and not request.POST.get('id') and not request.POST.get('username').strip():
+        return render_user_detail("Merci de renseigner un nom d'utilisateur")
+
+    # Case action (post request)
+    # Get user to follow or unfollow
+    elif request.POST.get('id'):  # From unfollow form
+        user_id = request.POST.get('id')
         try:
-            user = User.objects.get(id=user_id)
+            related_user = User.objects.get(id=user_id)
+        except (ValueError, User.DoesNotExist):
+            return render_user_detail("Cet utilisateur n'existe pas ou plus.")
+
+    elif request.POST.get('username'):  # From follow form
+        username = request.POST.get('username')
+        try:
+            related_user = User.objects.get(username=username)
+
+        except (ValueError, User.DoesNotExist):
+            return render_user_detail("Cet utilisateur n'existe pas ou plus.")
+
+    # Get action (follow / unfollow)
+    action = request.POST.get('action')
+
+    if related_user and action:
+        try:
             if action == 'follow':
-                UserFollows.objects.get_or_create(user=request.user, followed_user=user)
+                UserFollows.objects.get_or_create(user=request.user, followed_user=related_user)
             else:
-                UserFollows.objects.filter(user=request.user, followed_user=user).delete()
+                UserFollows.objects.filter(user=request.user, followed_user=related_user).delete()
             return HttpResponseRedirect(reverse('user_detail'))
-        except User.DoesNotExist:
-            return render(request, {
-                'error_message': "Cet utilisateur n'existe pas ou plus",
-            })
+        except (ValueError, User.DoesNotExist):
+            return render_user_detail("Cet utilisateur n'existe pas ou plus.")

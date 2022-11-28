@@ -26,9 +26,9 @@
             </ul>
         {% endif %}
     </div>
-    <div id="user">
+    <div class="user">
         {% if request.user.is_authenticated %}
-            Hello {{ request.user.username }},
+            Bonjour {{ request.user.username }} -
             <a href="{% url "logout" %}">Déconnexion</a>
 {#        {% else %}#}
 {#            <a href="{% url "login" %}">Connexion</a>#}
