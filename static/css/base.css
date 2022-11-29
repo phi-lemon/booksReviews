@@ -226,3 +226,23 @@ textarea:focus, select:focus, .vTextField:focus {
     margin-top: 50px;
     color: #cc0000;
 }
+
+.edit_ticket input[type=file] {
+    width: auto;
+    height: auto;
+    background: #fff;
+}
+
+.edit_ticket form label {
+    padding-top: 20px;
+}
+
+.edit_ticket #id_title {
+    width: 500px
+}
+
+.edit_ticket #id_description {
+    width: 700px;
+    height: 100px;
+    vertical-align: top;
+}

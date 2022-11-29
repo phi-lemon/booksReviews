@@ -5,4 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('', include('flux.urls')),
+    path('posts/', include('flux.urls')),
 ]
