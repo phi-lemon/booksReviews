@@ -1,11 +1,12 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
 class UserFollows(models.Model):
-    # voir https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#referencing-the-user-model
-    user = models.ForeignKey('auth.User', related_name='following', on_delete=models.CASCADE)
-    followed_user = models.ForeignKey('auth.User', related_name='followed_by', on_delete=models.CASCADE)
+    # Do not reference 'auth.User' but settings.AUTH_USER_MODEL
+    # see https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#referencing-the-user-model
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following', on_delete=models.CASCADE)
+    followed_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followed_by', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
