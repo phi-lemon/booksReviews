@@ -105,13 +105,13 @@ input[type=submit].greybutton, a.button.greybutton {
     background: #7f8c8d;
 }
 
-input, textarea {
-    display: block;
-    background: #efefef;
-    border: 0;
-    font-size: 14px;
-    height: 40px;
-}
+/*input, textarea {*/
+/*    display: block;*/
+/*    background: #efefef;*/
+/*    border: 0;*/
+/*    font-size: 14px;*/
+/*    height: 40px;*/
+/*}*/
 
 
 #content_account input, #content_account textarea {
@@ -133,6 +133,7 @@ input[type=number], input[type=tel], textarea, select, .vTextField {
     padding: 5px;
     margin: 2px;
     color: #000;
+    font-size: 14px;
     background-color: #ecf0f1;
 }
 
@@ -140,6 +141,17 @@ input[type=text]:focus, input[type=text]:active, input[type=password]:focus, inp
 input[type=url]:focus, input[type=number]:focus, input[type=tel]:focus,
 textarea:focus, select:focus, .vTextField:focus {
     border: none;
+}
+
+.edit_ticket #image-clear_id {
+    all: revert;
+    margin-left: 30px;
+}
+
+.edit_ticket label[for=image-clear_id] {
+    display: inline-block;
+    padding: 0;
+    margin: 0 0 30px 0;
 }
 
 .errorlist {

@@ -7,7 +7,7 @@ class Ticket(models.Model):
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=2048)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    upload = models.ImageField(upload_to='covers/', null=True, blank=True)
+    image = models.ImageField(upload_to='covers/', null=True, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

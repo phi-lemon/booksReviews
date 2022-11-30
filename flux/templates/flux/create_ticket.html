@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Demander une critique{% endblock %}
 {% block content %}
+
     <div class="edit_ticket">
         <h1>Demander une critique</h1>
 
         {% for message in messages %}
             <p><em>{{ message.level_tag|title }}:</em> {{ message }}</p>
         {% endfor %}
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <p>

@@ -6,6 +6,6 @@ from django.contrib.auth.models import User
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ("title", "description", "upload", "user")
+        fields = ["title", "description", "image", "user"]
         widgets = {'user': forms.HiddenInput()}
 

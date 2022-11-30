@@ -7,8 +7,10 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
-    path('', include('flux.urls')),
-    path('posts/', include('flux.urls')),
+    path('posts/', include('flux.urls'), name='posts'),
+    path('', include('flux.urls'), name='flux'),
 ]
 
-# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Uploaded images
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

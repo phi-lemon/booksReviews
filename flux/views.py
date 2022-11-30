@@ -1,13 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import TicketForm
 from .models import Ticket
 
 
-@login_required
-def index(request):
-    return render(request, 'flux/index.html', {'section': 'flux'})
+class HomePageView(LoginRequiredMixin, TemplateView):
+    template_name = "flux/index.html"
+
+
+# @login_required
+# def index(request):
+#     return render(request, 'flux/index.html', {'section': 'flux'})
 
 
 @login_required
@@ -18,7 +24,7 @@ def edit_ticket(request, pk=None):
         ticket = None
 
     if request.method == "POST":
-        form = TicketForm(request.POST, instance=ticket, initial={'user': request.user})
+        form = TicketForm(request.POST,  request.FILES, instance=ticket, initial={'user': request.user})
         if form.is_valid():
             updated_ticket = form.save()
             if ticket is None:
