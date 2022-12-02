@@ -7,5 +7,5 @@ class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ["title", "description", "image", "user"]
-        widgets = {'user': forms.HiddenInput()}
+        widgets = {'description': forms.Textarea, 'user': forms.HiddenInput()}
 

@@ -1,19 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import CharField, Value
+
+from itertools import chain
+
 from .forms import TicketForm
 from .models import Ticket
-
-
-class HomePageView(LoginRequiredMixin, TemplateView):
-    template_name = "flux/index.html"
-
-
-# @login_required
-# def index(request):
-#     return render(request, 'flux/index.html', {'section': 'flux'})
+from account.models import UserFollows
 
 
 @login_required
@@ -39,7 +33,32 @@ def edit_ticket(request, pk=None):
     return render(request, 'flux/create_ticket.html', {'section': 'posts', "method": request.method, "form": form})
 
 
+def get_users_viewable_tickets(user):
+    followed_users = UserFollows.objects.filter(user_id=user.id)
+    followed_users_ids = [user.followed_user_id for user in followed_users]
+    tickets = Ticket.objects.filter(user_id__in=followed_users_ids)
+    return tickets
 
+
+@login_required
+def feed(request):
+    # reviews = get_users_viewable_reviews(request.user)
+    # # returns queryset of reviews
+    # reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_users_viewable_tickets(request.user)
+    # returns queryset of tickets
+    # tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    return render(request, 'flux/index.html', context={'tickets': tickets, 'section': 'flux'})
+
+    # # combine and sort the two types of posts
+    # posts = sorted(
+    #     chain(reviews, tickets),
+    #     key=lambda post: post.time_created,
+    #     reverse=True
+    # )
+    # return render(request, 'index.html', context={'posts': posts})
 
 
 
