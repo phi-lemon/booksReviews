@@ -7,6 +7,10 @@ a {
     color: #2980b9;
 }
 
+strong {
+    font-weight: bold;
+}
+
 a:hover {
     color: #3498db;
 }
@@ -280,7 +284,7 @@ textarea:focus, select:focus, .vTextField:focus {
     color: #fff;
 }
 
-.flux .demande_review {
+.flux .reviews_tickets {
     display: grid;
     grid-template-columns: auto auto;
     width: 100%;
@@ -288,9 +292,10 @@ textarea:focus, select:focus, .vTextField:focus {
     border: 1px solid #7f8c8d;
     border-radius: 5px;
     padding: 20px;
+    margin-bottom: 15px;
 }
 
-.flux .demande_review em {
+.flux .reviews_tickets em {
     font-style: italic;
 }
 

@@ -6,7 +6,7 @@ from django.db.models import CharField, Value
 from itertools import chain
 
 from .forms import TicketForm, ReviewForm
-from .models import Ticket
+from .models import Ticket, Review
 from account.models import UserFollows
 
 
@@ -105,37 +105,53 @@ def create_review(request):
                   {"section": 'posts', "form_ticket": form_ticket, "form_review": form_review})
 
 
-def get_users_viewable_tickets(user):
-    followed_users = UserFollows.objects.filter(user_id=user.id)
-    followed_users_ids = [user.followed_user_id for user in followed_users]
-    tickets = Ticket.objects.filter(user_id__in=followed_users_ids)
-    return tickets
-
-
 def delete_dummy_ticket(request):
     if Ticket.objects.filter(title=DUMMY_TICKET_TITLE, user=request.user):
         Ticket.objects.filter(title=DUMMY_TICKET_TITLE, user=request.user).delete()
 
 
+def get_users_viewable_tickets(user):
+    """
+    Returns list of users to display tickets from (users followed + request.user)
+    """
+    followed_users = UserFollows.objects.filter(user_id=user.id)
+    users_viewable_tickets = [user.followed_user_id for user in followed_users]
+    # users_viewable_tickets.append(user.id)
+    tickets = Ticket.objects.filter(user_id__in=users_viewable_tickets)
+    return tickets
+
+
+def get_users_viewable_reviews(user):
+    """
+    Returns list of users to display reviews from (users followed + request.user)
+    """
+    followed_users = UserFollows.objects.filter(user_id=user.id)
+    users_viewable_reviews = [user.followed_user_id for user in followed_users]
+    # Add current user
+    users_viewable_reviews.append(user.id)
+    reviews = Review.objects.filter(user_id__in=users_viewable_reviews)
+    return reviews
+
+
 @login_required
 def feed(request):
     delete_dummy_ticket(request)
-    # reviews = get_users_viewable_reviews(request.user)
-    # # returns queryset of reviews
-    # reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+    reviews = get_users_viewable_reviews(request.user)
+    # returns queryset of reviews
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
     tickets = get_users_viewable_tickets(request.user)
     # returns queryset of tickets
-    # tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
-    return render(request, 'flux/index.html', context={'tickets': tickets, 'section': 'flux'})
+    # return render(request, 'flux/index.html', context={'tickets': tickets, 'reviews': reviews, 'section': 'flux'})
 
     # # combine and sort the two types of posts
-    # posts = sorted(
-    #     chain(reviews, tickets),
-    #     key=lambda post: post.time_created,
-    #     reverse=True
-    # )
-    # return render(request, 'index.html', context={'posts': posts})
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+    return render(request, 'flux/index.html', context={'posts': posts, 'section': 'flux'})
 
 
