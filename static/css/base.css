@@ -14,7 +14,7 @@ a:hover {
 h1, h2 {
     border-bottom: 1px solid #bdc3c7;
     padding: 0 0 10px 0;
-    margin: 20px 20px 30px 0;
+    margin: 20px 0px 30px 0;
 }
 
 h1 {
@@ -23,6 +23,14 @@ h1 {
 
 h2 {
     font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1.2em;
+}
+
+em {
+    font-style: italic;
 }
 
 #header {
@@ -103,13 +111,13 @@ input[type=submit].greybutton, a.button.greybutton {
     background: #7f8c8d;
 }
 
-/*input, textarea {*/
-/*    display: block;*/
-/*    background: #efefef;*/
-/*    border: 0;*/
-/*    font-size: 14px;*/
-/*    height: 40px;*/
-/*}*/
+a.button.lightblue {
+    background: #3498db;
+}
+
+a.button.lightblue:hover {
+    background: #34495e;
+}
 
 
 #content_account input, #content_account textarea {
@@ -237,35 +245,67 @@ textarea:focus, select:focus, .vTextField:focus {
     color: #cc0000;
 }
 
-.edit_ticket input[type=file] {
+.ticket_review input[type=file] {
     width: auto;
     height: auto;
     background: #fff;
 }
 
-.edit_ticket form label {
+.ticket_review form label {
     padding-top: 20px;
 }
 
-.edit_ticket #id_title {
+.ticket_review #id_title {
     width: 500px
 }
 
-.edit_ticket #id_description {
+.ticket_review #id_description {
     width: 700px;
     height: 100px;
     vertical-align: top;
 }
 
-.flux .demande_review {
-    width: 900px;
-    height: auto;
-    border: 1px solid #7f8c8d !important;
+.ticket_review fieldset {
+    border: 1px solid #bdc3c7;
     border-radius: 5px;
-    /*background: #7f8c8d;*/
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.ticket_review legend {
+    padding: 3px 10px;
+    background: #7f8c8d;
+    border-radius: 5px;
+    font-size: 1.1em;
+    color: #fff;
+}
+
+.flux .demande_review {
+    display: grid;
+    grid-template-columns: auto auto;
+    width: 100%;
+    height: auto;
+    border: 1px solid #7f8c8d;
+    border-radius: 5px;
     padding: 20px;
 }
 
 .flux .demande_review em {
     font-style: italic;
 }
+
+.response_button {
+    align-self: end;
+    justify-self: end;
+}
+
+.cover {
+    margin-top: 10px;
+    max-width: 100px;
+    height: auto;
+}
+
+/*.cover img {*/
+/*    margin-top: 10px;*/
+/*    max-width: 100px;*/
+/*}*/

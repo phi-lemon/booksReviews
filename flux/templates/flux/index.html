@@ -4,18 +4,32 @@
 {% block content %}
     <div class="flux">
 
-    <h1>Flux</h1>
-    <p>Demander une critique - Créer une critique</p><br><br>
+        <h1>Flux</h1>
+        <p><a href="{% url 'create_ticket' %}" class="button lightblue">Demander une critique</a><a
+                href="{% url 'create_review' %}" class="button">Créer
+            une critique</a></p><br><br>
 
-    {% for item in tickets %}
-        <div class="demande_review">
-            {{ item.user }} a demandé une critique :<br><br>
-            <span>{{ item.title }}</span> - <span>{{ item.time_created }}</span><br>
-            <em>{{ item.description }}</em>
+        {% for message in messages %}
+            <p><em>{{ message.level_tag|title }}:</em> {{ message }}</p><br><br>
+        {% endfor %}
+
+        {% for ticket in tickets %}
+            <div class="demande_review">
+                <div>
+                    {{ ticket.user }} a demandé une critique - {{ ticket.time_created }} :<br><br>
+                    <h3>{{ ticket.title }}</h3>
+                    <em>{{ ticket.description }}</em><br>
+                    {% if ticket.image %}
+                        <img src="/media/{{ ticket.image }}" class="cover">
+                    {% endif %}
+                    <br>
+                </div>
+                <div class="response_button">
+                    <a href="{% url 'create_review_from_ticket' ticket.id %}" class="button">Créer une critique</a>
+                </div>
+            </div>
             <br>
-        </div>
-        <br>
-    {% endfor %}
+        {% endfor %}
 
     </div>
 

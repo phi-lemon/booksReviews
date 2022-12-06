@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Créer une critique{% endblock %}
+{% block content %}
+
+    <div class="ticket_review">
+        <h1>Créer une critique</h1>
+
+        {% for message in messages %}
+            <p><em>{{ message.level_tag|title }}:</em> {{ message }}</p>
+        {% endfor %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset>
+                <legend>Ticket</legend>
+                {% if form_ticket %}
+
+                    {{ form_ticket.as_p }}
+
+                {% else %}
+
+                    <p>Vous êtes en train de poster en réponse à : <br>
+                    <h3>{{ ticket.user }} a demandé une critique - {{ ticket.time_created }}</h3><br>
+                    <ul>
+                        <li>{{ ticket.title }}</li>
+                        <li><em>"{{ ticket.description }}"</em></li>
+                    </ul>
+                    {% if ticket.image %}
+                        <img src="/media/{{ ticket.image }}" class="cover">
+                    {% endif %}
+
+                {% endif %}
+            </fieldset>
+            <fieldset>
+                <legend>Critique</legend>
+                {{ form_review.as_p }}
+            </fieldset>
+            <p>
+                <input type="submit" value="Submit">
+            </p>
+        </form>
+    </div>
+{% endblock %}
