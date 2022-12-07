@@ -13,42 +13,20 @@
             <p><em>{{ message.level_tag|title }}:</em> {{ message }}</p><br><br>
         {% endfor %}
 
-        {#        {% for ticket in tickets %}#}
-        {#            <div class="demande_review">#}
-        {#                <div>#}
-        {#                    {{ ticket.user }} a demandé une critique - {{ ticket.time_created }} :<br><br>#}
-        {#                    <h3>{{ ticket.title }}</h3>#}
-        {#                    <em>{{ ticket.description }}</em><br>#}
-        {#                    {% if ticket.image %}#}
-        {#                        <img src="/media/{{ ticket.image }}" class="cover">#}
-        {#                    {% endif %}#}
-        {#                    <br>#}
-        {#                </div>#}
-        {#                <div class="response_button">#}
-        {#                    <a href="{% url 'create_review_from_ticket' ticket.id %}" class="button">Créer une critique</a>#}
-        {#                </div>#}
-        {#            </div>#}
-        {#            <br>#}
-        {#        {% endfor %}#}
-        {##}
-        {#        {% for review in reviews %}#}
-        {#            <div class="reviews">#}
-        {#                <div>#}
-        {#                    {{ review.user }} a publié une critique - {{ ticket.time_created }} :<br><br>#}
-        {#                    <h3>{{ review.headline }} - {{ review.rating }}</h3>#}
-        {#                    <em>{{ review.body }}</em><br>#}
-        {#                </div>#}
-        {#            </div>#}
-        {#            <br>#}
-        {#        {% endfor %}#}
-
-
         {% for post in posts %}
-
             <div class="reviews_tickets">
                 {% if post.content_type == 'TICKET' %}
                     <div>
-                        {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong> a {% endif %}
+
+                        {% if post.rev %}
+                            {% if post.rev.user == request.user %}Vous avez {% else %} <strong>{{ post.rev.user }}</strong>
+                            a {% endif %}
+                            publié une critique - {{ post.rev.time_created }} :<br>
+                            {{ post.rev.headline }} - {{ post.rev.rating }}<br><br>
+                        {% endif %}
+
+                        {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong>
+                            a {% endif %}
                         demandé une critique - {{ post.time_created }} :<br><br>
                         <h3>{{ post.title }}</h3>
                         <em>{{ post.description }}</em><br>
@@ -57,14 +35,18 @@
                         {% endif %}
                         <br>
                     </div>
-                    <div class="response_button">
-                        <a href="{% url 'create_review_from_ticket' post.id %}" class="button">Créer une critique</a>
-                    </div>
+                    {% if not post.rev %}
+                        <div class="response_button">
+                            <a href="{% url 'create_review_from_ticket' post.id %}" class="button">Créer une
+                                critique</a>
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 {% if post.content_type == 'REVIEW' %}
                     <div>
-                        {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong> a {% endif %}
+                        {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong>
+                            a {% endif %}
                         publié une critique - {{ post.time_created }} :<br><br>
                         <h3>{{ post.headline }} - {{ post.rating }}</h3>
                         <em>{{ post.body }}</em><br>

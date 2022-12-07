@@ -153,12 +153,12 @@ textarea:focus, select:focus, .vTextField:focus {
     border: none;
 }
 
-.edit_ticket #image-clear_id {
+.ticket_review #image-clear_id {
     all: revert;
     margin-left: 30px;
 }
 
-.edit_ticket label[for=image-clear_id] {
+.ticket_review label[for=image-clear_id] {
     display: inline-block;
     padding: 0;
     margin: 0 0 30px 0;
