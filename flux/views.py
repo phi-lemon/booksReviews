@@ -2,6 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import CharField, Value
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
 
 from itertools import chain
 
@@ -11,17 +14,36 @@ from account.models import UserFollows
 
 
 @login_required
-def edit_ticket(request, pk=None):
+def create_ticket(request):
     """
-    Creates or edit a ticket
+    Creates a ticket
     :param request: http request
-    :param pk: id of the ticket, None if url is 'ticket/new/'
     :return: render template
     """
-    if pk is not None:
-        ticket = get_object_or_404(Ticket, pk=pk)
+
+    if request.method == "POST":
+        form = TicketForm(request.POST, request.FILES)
+        if form.is_valid():
+            created_ticket = form.save(commit=False)
+            created_ticket.user = request.user
+            created_ticket.save()
+            messages.success(request, f"Le ticket {created_ticket} a été créé.")
+            return redirect("index")
     else:
-        ticket = None
+        form = TicketForm()
+
+    return render(request, 'flux/create_ticket.html', {'section': 'posts', "method": request.method, "form": form})
+
+
+@login_required
+def edit_ticket(request, pk):
+    """
+    edit a ticket
+    :param request: http request
+    :param pk: id of the ticket
+    :return: render template
+    """
+    ticket = get_object_or_404(Ticket, pk=pk)
 
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES, instance=ticket)
@@ -29,12 +51,8 @@ def edit_ticket(request, pk=None):
             updated_ticket = form.save(commit=False)
             updated_ticket.user = request.user
             updated_ticket.save()
-            if ticket is None:
-                messages.success(request, f"Le ticket {updated_ticket} a été créé.")
-            else:
-                messages.success(request, f"Le ticket {updated_ticket} a été mis à jour.")
-
-            return redirect("edit_ticket", updated_ticket.pk)
+            messages.success(request, f"Le ticket {updated_ticket} a été mis à jour.")
+            return redirect("posts")
     else:
         form = TicketForm(instance=ticket)
 
@@ -60,12 +78,11 @@ def create_review_from_ticket(request, pk=None):
         # Creates the review
         form_review = ReviewForm(request.POST)
         if form_review.is_valid():
-            # created_review = form_review.save()
             created_review = form_review.save(commit=False)
             created_review.user = request.user
-            created_review.ticket = get_object_or_404(Ticket, pk=pk)  # new
-            created_review.ticket.save()  # new
-            created_review.save()  # new
+            created_review.ticket = get_object_or_404(Ticket, pk=pk)
+            created_review.ticket.save()
+            created_review.save()
             messages.success(request, f"La critique {created_review} a été créée")
             return redirect("index")
 
@@ -75,7 +92,38 @@ def create_review_from_ticket(request, pk=None):
 
 
 @login_required
+def edit_review(request, pk):
+    """
+    Edit a review
+    :param request:
+    :param pk: ticket id
+    :return:
+    """
+    review = get_object_or_404(Review, pk=pk)
+    ticket_id = review.ticket.id
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    form_review = ReviewForm(initial={'user': request.user, 'ticket': ticket}, instance=review)
+
+    if request.method == 'POST':
+        form_review = ReviewForm(request.POST, instance=review)
+        if form_review.is_valid():
+            updated_review = form_review.save(commit=False)
+            updated_review.user = request.user
+            updated_review.ticket = ticket
+            updated_review.save()
+            messages.success(request, f"La critique {updated_review} a été mise à jour")
+            return redirect("posts")
+
+    return render(request, 'flux/create_review.html',
+                  {"section": 'posts', "method": request.method,
+                   "form_review": form_review, 'ticket': ticket})
+
+
+@login_required
 def create_review(request):
+    """
+    Creates a review and a ticket
+    """
     form_ticket = TicketForm()
     form_review = ReviewForm()
     if request.method == 'POST':
@@ -121,6 +169,9 @@ def get_users_viewable_reviews(user):
 
 @login_required
 def feed(request):
+    """
+    Display feed of the current user
+    """
     reviews = get_users_viewable_reviews(request.user)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
@@ -146,6 +197,41 @@ def feed(request):
                   context={'posts': posts, 'followed_users': followed_users, 'section': 'flux'})
 
 
+def get_user_posts(user):
+    """
+    Returns list of tickets and reviews from current user
+    """
+    tickets = Ticket.objects.filter(user=user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    reviews = Review.objects.filter(user=user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+    return posts
+
+
 @login_required
-def my_posts(request):
-    pass
+def user_posts(request):
+    user = request.user
+    posts = get_user_posts(user)
+
+    return render(request, 'flux/posts.html',
+                  context={'posts': posts, 'section': 'posts'})
+
+
+# todo ajouter login required
+class TicketDeleteView(SuccessMessageMixin, DeleteView):
+    model = Ticket
+    template_name = 'flux/ticket_delete_form.html'
+    success_message = "Le ticket a été supprimé"
+    success_url = reverse_lazy('posts')
+
+
+class ReviewDeleteView(SuccessMessageMixin, DeleteView):
+    model = Review
+    template_name = 'flux/review_delete_form.html'
+    success_message = "La critique a été supprimée"
+    success_url = reverse_lazy('posts')

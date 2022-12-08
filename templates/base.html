@@ -19,7 +19,7 @@
                     <a href="{% url "index" %}">Flux</a>
                 </li>
                 <li {% if section == "posts" %}class="selected"{% endif %}>
-                    <a href="#">Posts</a>
+                    <a href="{% url "posts" %}">Posts</a>
                 </li>
                 <li {% if section == "abonnements" %}class="selected"{% endif %}>
                     <a href="{% url "user_detail" %}">Abonnements</a>

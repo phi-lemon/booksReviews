@@ -7,7 +7,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
-    path('posts/', include('flux.urls'), name='posts'),
+    path('posts/', include('flux.urls')),
     path('', include('flux.urls'), name='flux'),
 ]
 
