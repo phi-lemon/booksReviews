@@ -98,7 +98,7 @@ def create_review(request):
 
 def get_users_viewable_tickets(user):
     """
-    Returns list of users to display tickets from (users followed + request.user)
+    Returns list of tickets from users followed
     """
     followed_users = UserFollows.objects.filter(user_id=user.id)
     users_viewable_tickets = [user.followed_user_id for user in followed_users]
@@ -108,7 +108,8 @@ def get_users_viewable_tickets(user):
 
 def get_users_viewable_reviews(user):
     """
-    Returns list of users to display reviews from (users followed + request.user)
+    Returns list of reviews to display: from users followed + request.user
+    also reviews from user not followed in response to request.user ticket
     """
     followed_users = UserFollows.objects.filter(user_id=user.id)
     users_viewable_reviews = [user.followed_user_id for user in followed_users]
@@ -127,6 +128,8 @@ def feed(request):
     tickets = get_users_viewable_tickets(request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
+    followed_users = UserFollows.objects.filter(user_id=request.user.id)
+
     # Get ticket review
     for ticket in tickets:
         if ticket.review_set.all():  # has a review
@@ -139,7 +142,8 @@ def feed(request):
         key=lambda post: post.time_created,
         reverse=True
     )
-    return render(request, 'flux/index.html', context={'posts': posts, 'section': 'flux'})
+    return render(request, 'flux/index.html',
+                  context={'posts': posts, 'followed_users': followed_users, 'section': 'flux'})
 
 
 @login_required

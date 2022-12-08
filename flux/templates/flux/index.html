@@ -14,25 +14,33 @@
         {% endfor %}
 
         {% for post in posts %}
-            <div class="reviews_tickets">
-                {% if post.content_type == 'TICKET' %}
+            {% if post.content_type == 'TICKET' %}
+                <div class="reviews_tickets">
                     <div>
-
-                        {% if post.rev %}
-                            {% if post.rev.user == request.user %}Vous avez {% else %} <strong>{{ post.rev.user }}</strong>
-                            a {% endif %}
+                        {% if post.rev and post.rev.user in followed_users %}
+                            {% if post.rev.user == request.user %}Vous avez {% else %}
+                                <strong>{{ post.rev.user }}</strong>
+                                a {% endif %}
                             publié une critique - {{ post.rev.time_created }} :<br>
-                            {{ post.rev.headline }} - {{ post.rev.rating }}<br><br>
+                            <blockquote>
+                                {{ post.rev.headline }}<span class="Stars" style="--rating: {{ post.rev.rating }};"
+                                                             title="Note : {{ post.rev.rating }}">
+                            </span><br>
+                                <em>{{ post.rev.body }}</em>
+                            </blockquote>
+                            <br><br>
                         {% endif %}
 
-                        {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong>
-                            a {% endif %}
-                        demandé une critique - {{ post.time_created }} :<br><br>
-                        <h3>{{ post.title }}</h3>
-                        <em>{{ post.description }}</em><br>
-                        {% if post.image %}
-                            <img src="/media/{{ post.image }}" class="cover">
-                        {% endif %}
+                        <div class="ask_review">
+                            {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong>
+                                a {% endif %}
+                            demandé une critique - {{ post.time_created }} :<br><br>
+                            <h3>{{ post.title }}</h3>
+                            <em>{{ post.description }}</em><br>
+                            {% if post.image %}
+                                <img src="/media/{{ post.image }}" class="cover">
+                            {% endif %}
+                        </div>
                         <br>
                     </div>
                     {% if not post.rev %}
@@ -41,18 +49,40 @@
                                 critique</a>
                         </div>
                     {% endif %}
-                {% endif %}
 
-                {% if post.content_type == 'REVIEW' %}
+                </div>
+            {% endif %}
+
+            {% if post.content_type == 'REVIEW' %}
+                <div class="reviews_tickets">
                     <div>
                         {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong>
                             a {% endif %}
                         publié une critique - {{ post.time_created }} :<br><br>
-                        <h3>{{ post.headline }} - {{ post.rating }}</h3>
-                        <em>{{ post.body }}</em><br>
+                        <blockquote>
+                            {{ post.headline }}
+                            <span class="Stars" style="--rating: {{ post.rating }};" title="Note : {{ post.rating }}">
+                            </span><br>
+                            <em>{{ post.body }}</em>
+                        </blockquote>
+                        <br>
+
+                        <div class="ask_review">
+                            {% if post.ticket.user == request.user %}Vous avez {% else %}
+                                <strong>{{ post.ticket.user }}</strong>
+                                a {% endif %}
+                            demandé une critique :<br><br>
+                            <h3>{{ post.ticket.title }}</h3>
+                            {% if post.ticket.image %}
+                                <img src="/media/{{ post.ticket.image }}" class="cover">
+                            {% endif %}
+                        </div>
+
                     </div>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
+
+
         {% endfor %}
 
     </div>

@@ -2,7 +2,12 @@ from django.contrib import admin
 from . import models
 
 
-admin.site.register(models.Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('headline', 'ticket', 'user')
+
+
+# admin.site.register(models.Review)
+admin.site.register(models.Review, ReviewAdmin)
 
 
 class TicketAdmin(admin.ModelAdmin):

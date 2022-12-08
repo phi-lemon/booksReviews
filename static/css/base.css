@@ -293,6 +293,7 @@ textarea:focus, select:focus, .vTextField:focus {
     border-radius: 5px;
     padding: 20px;
     margin-bottom: 15px;
+    color: #4f4f4f;
 }
 
 .flux .reviews_tickets em {
@@ -310,7 +311,54 @@ textarea:focus, select:focus, .vTextField:focus {
     height: auto;
 }
 
-/*.cover img {*/
-/*    margin-top: 10px;*/
-/*    max-width: 100px;*/
-/*}*/
+blockquote {
+    margin-top: 20px;
+    /*font-family:  "Lucida Handwriting", "Lucida Calligraphy", "Segoe Print", "Times New Roman", sans-serif;*/
+    font-size: 1.4em;
+    color: #272727;
+    padding-left: 64px;
+    background: url("../img/blockquote.png") no-repeat 0 0;
+    min-height: 45px;
+}
+
+blockquote em {
+    font-size: initial;
+}
+
+.ask_review {
+    margin-left: 50px;
+    padding-left: 20px;
+    border-left: 7px solid #ecf0f1;
+}
+
+.ask_review h3 {
+    color: #34495e;
+    font-weight: bolder;
+}
+
+/************************/
+/*       Rating         */
+/************************/
+:root {
+    --star-size: 30px;
+    --star-size-small: 20px;
+    --star-color: #fff;
+    --star-background: #f1c40f;
+}
+
+.Stars {
+    --percent: calc(var(--rating) / 5 * 100%);
+    display: inline-block;
+    font-size: var(--star-size);
+    font-family: Times, serif;
+    line-height: 1;
+    margin: 0 0 0 20px;
+}
+.Stars::before {
+    content: "★★★★★";
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
