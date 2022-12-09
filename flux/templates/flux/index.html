@@ -31,7 +31,7 @@
                             <br><br>
                         {% endif %}
 
-                        <div class="ask_review">
+                        <div class="ask_review {% if post.rev %}answered{% endif %}">
                             {% if post.user == request.user %}Vous avez {% else %} <strong>{{ post.user }}</strong>
                                 a {% endif %}
                             demandé une critique - {{ post.time_created }} :<br><br>

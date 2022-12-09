@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import CharField, Value
 from django.views.generic.edit import DeleteView
@@ -38,12 +39,17 @@ def create_ticket(request):
 @login_required
 def edit_ticket(request, pk):
     """
-    edit a ticket
+    Edit a user's own ticket
     :param request: http request
     :param pk: id of the ticket
     :return: render template
     """
     ticket = get_object_or_404(Ticket, pk=pk)
+
+    # Check permission
+    if not ticket.user == request.user:
+        messages.info(request, "Vous ne pouvez pas éditer ce ticket")
+        return redirect("posts")
 
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES, instance=ticket)
@@ -63,9 +69,7 @@ def edit_ticket(request, pk):
 def create_review_from_ticket(request, pk=None):
     """
     Creates a review in response to a ticket
-    :param request:
-    :param pk: ticket id
-    :return:
+    First check if the user has permission to create this review
     """
     ticket = None
     form_review = None
@@ -74,6 +78,11 @@ def create_review_from_ticket(request, pk=None):
             # Get ticket information
             ticket = get_object_or_404(Ticket, pk=pk)
             form_review = ReviewForm(initial={'user': request.user, 'ticket': ticket})
+
+            # has the user the permission ?
+            if ticket not in get_users_viewable_tickets(request.user):
+                messages.info(request, "Vous ne pouvez pas créer cette critique")
+                return redirect("posts")
     else:
         # Creates the review
         form_review = ReviewForm(request.POST)
@@ -94,12 +103,17 @@ def create_review_from_ticket(request, pk=None):
 @login_required
 def edit_review(request, pk):
     """
-    Edit a review
+    Edit a user's own review
     :param request:
     :param pk: ticket id
     :return:
     """
     review = get_object_or_404(Review, pk=pk)
+
+    if not review.user == request.user:
+        messages.info(request, "Vous ne pouvez pas éditer cette critique")
+        return redirect("posts")
+
     ticket_id = review.ticket.id
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     form_review = ReviewForm(initial={'user': request.user, 'ticket': ticket}, instance=review)
@@ -222,16 +236,21 @@ def user_posts(request):
                   context={'posts': posts, 'section': 'posts'})
 
 
-# todo ajouter login required
-class TicketDeleteView(SuccessMessageMixin, DeleteView):
+class TicketDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = Ticket
     template_name = 'flux/ticket_delete_form.html'
     success_message = "Le ticket a été supprimé"
     success_url = reverse_lazy('posts')
 
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
-class ReviewDeleteView(SuccessMessageMixin, DeleteView):
+
+class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = Review
     template_name = 'flux/review_delete_form.html'
     success_message = "La critique a été supprimée"
     success_url = reverse_lazy('posts')
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
