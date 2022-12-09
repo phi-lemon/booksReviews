@@ -6,7 +6,6 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('headline', 'ticket', 'user')
 
 
-# admin.site.register(models.Review)
 admin.site.register(models.Review, ReviewAdmin)
 
 
