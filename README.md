@@ -11,7 +11,7 @@ If you don't have python installed, download and install python from here : http
 git clone https://github.com/phi-lemon/booksReviews.git
 ```
 
-Create and activate the virtual environment:
+### Create and activate the virtual environment:
 
 ```bash
 python -m venv venv
@@ -21,7 +21,7 @@ source venv/bin/activate  # on linux
 If you have any problems to activate the virtual environment on windows, 
 you may need to authorize scripts execution : `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope process`
 
-Install the dependencies
+### Install the dependencies
 
 ```bash
 pip install -r requirements.txt
